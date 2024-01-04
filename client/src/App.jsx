@@ -8,7 +8,7 @@ const App = () => {
 
   const [taskData, setTaskData] = useState([])
   const [task, setTask] = useState('')
-  const [taskCounter, setTaskCounter] = useState(0)
+  const [errMsg, setErrMsg] = useState(null)
 
   //fetch taskList from api
   const fetchData = async() => {
@@ -23,7 +23,7 @@ const App = () => {
       const data = await response.json();
       setTaskData(data.taskList);
     } catch (error) {
-      console.error('Error fetching data:', error.message);
+      setErrMsg(error.message)
     } 
   };
 
@@ -33,6 +33,17 @@ const App = () => {
 
   const handleInputChange = (e) =>{
     setTask(e.target.value)
+  }
+
+  //error message component
+  const PromptError = ({message}) =>{
+    return(
+      <div className=" w-full flex justify-center">
+        <div className="w-fit flex justify-center bg-red-100 py-2 px-4 rounded-lg shadow-md shadow-red-200 ring-1 ring-red-200">
+         <p className="text-red-600 text-lg">{message}</p>
+        </div>
+      </div>
+    )
   }
 
   //Add task
@@ -56,14 +67,12 @@ const App = () => {
         setTask('')
         fetchData();
       } catch (error) {
-        console.error('Error fetching data:', error.message);
+        setErrMsg(error.message)
       } 
     }
   }
 
   //delete task
-
-  
 
   const deleteTask = async(taskId) =>{
     const response = await fetch('http://localhost:5000/task', {
@@ -76,6 +85,7 @@ const App = () => {
     fetchData()
   }
 
+  //button component
   const AddButton = ({label, icon, addFunction}) =>{
     return(
       <div onClick={addFunction} className="w-full h-full flex items-center bg-slate-600 justify-center
@@ -96,20 +106,21 @@ const App = () => {
       <div className="w-[30%] max-lg:w-[50%] max-md:w-[60%] max-sm:w-[80%] max rounded-lg relative">
         <div className=" h-16 w-full flex mb-10 gap-2">
           <input className="h-full w-[70%] focus:outline-none focus:ring-1 text-xl
-        focus:ring-slate-500 bg-slate-200 p-4 rounded-full shadow-lg"
+        focus:ring-slate-500 bg-slate-200 p-4 rounded-full shadow-slate-300 ring-1 ring-slate-300 shadow-md"
            type="text"
            value={task}
            placeholder="Add Task..."
            onChange={handleInputChange}
-           onKeyPress={()=>{
+           onKeyDown={()=>{
             if(event.key === 'Enter'){
               handleAddPress()
             }
            }}
           /> 
           <div className="w-[30%]">
-            <div onClick={handleAddPress} className=" relative w-full h-full flex items-center bg-emerald-600 shadow-emerald-200 justify-center
-            gap-2 pr-5 rounded-full hover:bg-emerald-500 cursor-pointer transition-all duration-300 shadow-lg">
+            <div onClick={handleAddPress} className=" relative w-full h-full flex items-center justify-center
+            gap-2 pr-5 rounded-full bg-emerald-500 ring-1 ring-emerald-600  shadow-emerald-600 shadow-md
+          hover:bg-emerald-400 hover:ring-emerald-500 hover:shadow-emerald-500 cursor-pointer transition-all duration-300">
               <div>
                 <IoAdd size={22} color="white"/>
               </div>
@@ -118,11 +129,14 @@ const App = () => {
           </div>   
         </div>
         <div className="w-full flex gap-1 flex-col">
-          {(typeof taskData === 'undefined' || taskData.length === 0) 
+          {(typeof taskData === 'undefined' || taskData.length === 0 || errMsg !== null) 
           ? (
-            <h1 className=" text-2xl text-slate-400 font-semibold p-16">
-              No task found! Added Task shows here.
-            </h1>
+            <div className="border relative p-10 rounded-md">
+               <div className="absolute top-[-20px]">
+                 <PromptError message={errMsg === null ? "Task list is empty!" : errMsg} />
+               </div>
+              <p className="text-2xl text-slate-400 font-semibold">Added Task shows here. Add task</p>
+            </div>
           )
           :
           (
