@@ -29,12 +29,15 @@ app.post('/task', (req, res) => {
     const newTask = req.body
     const existingTask = fs.readFileSync(filePath, 'utf8')
     const toObj = JSON.parse(existingTask)
-    toObj.taskList.push(Object.values(newTask)[0])
+    const objLength = toObj.taskList.length+1
+/*     toObj.taskList = {task:Object.values(newTask)[0], id:Object.keys(toObj).length } */
+    toObj.taskList.push({taskName:Object.values(newTask)[0], id: objLength, status: 'active'})
+/*     toObj.taskList.push(Object.values(newTask)[0]) */
     const toJson = JSON.stringify(toObj, null, 2)
     fs.writeFileSync(filePath, toJson, 'utf8')
 
     const response = {
-      message: 'success'
+      message: Object.values(newTask)[0] +' is added',
     };
   
     // Sending the JSON response
@@ -62,6 +65,39 @@ app.delete('/task', (req, res) => {
   fs.writeFileSync(filePath, updatedList, 'utf8')
 
   res.json(taskId)
+})
+
+//update task
+app.put('/task', (req, res)=>{
+  try {
+    
+    // Create or overwrite the JSON file with the posted data
+    const taskId = req.body
+    const existingTask = fs.readFileSync(filePath, 'utf8')
+    const toObj = JSON.parse(existingTask)
+/*     toObj.taskList = {task:Object.values(newTask)[0], id:Object.keys(toObj).length } */
+/*     toObj.taskList.push(Object.values(newTask)[0]) */
+
+  /*   toObj.taskList.map((task)=>{
+      if(taskId === task.id){
+        task.status = 'done'
+      }
+    }) */
+    toObj.taskList[taskId.taskId-1].status='done'
+
+    const toJson = JSON.stringify(toObj, null, 2)
+    fs.writeFileSync(filePath, toJson, 'utf8')
+
+    const response = {
+      message: toObj.taskList[taskId.taskId-1].taskName+'status is set done'
+    };
+  
+    // Sending the JSON response
+    res.json(response);
+  } catch (error) {
+    console.error('Error creating task folder and JSON file:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 })
 
 app.listen(port, () => {

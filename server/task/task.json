@@ -1,7 +1,54 @@
 {
   "taskList": [
-    "positivity",
-    "action",
-    "discipline"
+    {
+      "taskName": "set text decoration line through",
+      "id": 1,
+      "status": "done"
+    },
+    {
+      "taskName": "set task status to done",
+      "id": 2,
+      "status": "done"
+    },
+    {
+      "taskName": "right click to mark task as done",
+      "id": 3,
+      "status": "done"
+    },
+    {
+      "taskName": "Edit task",
+      "id": 4,
+      "status": "done"
+    },
+    {
+      "taskName": "update task",
+      "id": 5,
+      "status": "done"
+    },
+    {
+      "taskName": "delete task",
+      "id": 6,
+      "status": "done"
+    },
+    {
+      "taskName": "Fix input field losses focus when typing",
+      "id": 7,
+      "status": "done"
+    },
+    {
+      "taskName": "learn express js route",
+      "id": 8,
+      "status": "active"
+    },
+    {
+      "taskName": "learn mongo db",
+      "id": 9,
+      "status": "active"
+    },
+    {
+      "taskName": "kjkjkj",
+      "id": 10,
+      "status": "done"
+    }
   ]
 }
